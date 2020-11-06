@@ -29,10 +29,14 @@ class UploadsController extends Controller
 
         // Laravel automatski kreira UploadedFile klasu od request()->file('file') a to je posao dropzone
         // Potrebno je wrapovati u kolekciju, i posle pristupiti sa each metodom nad kolekcijom
+        // Jer dropzone salje asinhrono, moraju se skupiti sa kolekcijom
         $images = Collection::wrap(request()->file('file'));
 
         $images->each(function($image) {
 
+            // $image je tipa Illuminate\Http\UploadedFile, format koji se moze koristiti u Image::make()
+
+            
             // Random ime dodajemo ekstenziju na to
             $basename = Str::random();
             $original = $basename . '.' . $image->getClientOriginalExtension();
@@ -55,7 +59,6 @@ class UploadsController extends Controller
                 'original' => '/images/' . $original,
                 'thumbnail' => '/images/' . $thumbnail
             ]);
-
         });
 
     }
